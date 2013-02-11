@@ -1,0 +1,136 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import processing.serial.*;
+import cc.arduino.*;
+
+Arduino arduino;
+File file;
+StringBuffer contents;
+BufferedReader reader;
+String text;
+int servoPin1 = 2; // Control pin for servo motor
+int servoPin2 = 3; // Control pin for servo motor
+int servoPin3 = 4; // Control pin for servo motor
+int servoPin4 = 5; // Control pin for servo motor
+int servoPin5 = 6; // Control pin for servo motor
+int servoPin6 = 7; // Control pin for servo motor
+int servoPin7 = 8; // Control pin for servo motor
+int servoPin8 = 9; // Control pin for servo motor
+int servoPin9 = 10; // Control pin for servo motor
+int servoPin10 = 11; // Control pin for servo motor
+int servoPin11 = 12; // Control pin for servo motor
+int servoPin12 = 13; // Control pin for servo motor
+
+float[] prevArray = new float[12];
+int[] pos = new int[12];
+
+void setup() {
+  frameRate(30);
+  arduino = new Arduino(this, Arduino.list()[0]);
+  arduino.pinMode(servoPin1, Arduino.OUTPUT);      
+  file = new File(sketchPath + "/data/StudyJamesTom1.csv");
+  contents = new StringBuffer();
+  try 
+  { 
+     reader = new BufferedReader(new FileReader(file));
+  } catch (FileNotFoundException e)
+  {
+     e.printStackTrace();
+  }
+  for(int i = 0; i<prevArray.length; i++) {
+    prevArray[i]=0;
+    pos[i]=0;
+  }
+}
+
+void draw() {
+
+ 
+ try {
+   
+           if(reader.readLine()==null) {
+             reader.close();
+             try {
+                
+                reader = new BufferedReader(new FileReader(file));
+              } catch (FileNotFoundException e)
+              {
+                e.printStackTrace();
+              }
+           } else {
+             text = reader.readLine();
+             if (text!=null){
+               String[] dataArray = text.split(",");
+               float[] newArray = new float[12];
+               for (int i = 0; i<newArray.length; i++) { 
+                   newArray[i]=Float.parseFloat(dataArray[i+1]);
+                   int j = (int)newArray[i];
+                   int excel =(int)prevArray[i]+j;
+                   pos[i]=excel;
+               }
+               prevArray = newArray;
+                 
+           }  
+           }
+        
+        
+      
+        } catch (IOException e)
+        {
+           
+          e.printStackTrace();
+        }
+        
+        int position0 = abs((int)map(pos[1], -1000, 1000, 0, 360));
+        arduino.analogWrite(servoPin1, position0);
+      //  print(pos[0] + " ");
+        print(position0 + " ");
+        
+        int position1 = abs((int)map(pos[2], -1000, 1000, 0, 360));
+        arduino.analogWrite(servoPin2, position1);
+        print(position1 + " ");
+        
+        int position2 = abs((int)map(pos[0], -1000, 1000, 80, 150));
+        arduino.analogWrite(servoPin3, position2);
+        print(position2 + " ");
+       
+        int position3 = abs((int)map(pos[3], -1000, 1000, 0, 360));
+        arduino.analogWrite(servoPin4, position3);
+        print(position3 + " ");
+        
+        int position4 = abs((int)map(pos[4], -1000, 1000, 80, 150));
+        //arduino.analogWrite(servoPin5, position4);
+        print(position4 + " ");
+        
+        int position5 = abs((int)map(pos[5], -1000, 1000, 0, 360));
+        arduino.analogWrite(servoPin6, position5);
+        print(position5 + " ");
+        
+        int position6 = abs((int)map(pos[6], -1000, 1000, 90, 140));
+        arduino.analogWrite(servoPin7, position6);
+        print(position6 + " ");
+        
+        int position7 = abs((int)map(pos[7], -1000, 1000, 80, 150));
+        arduino.analogWrite(servoPin8, position7);
+        print(position7 + " ");
+        
+        int position8 = abs((int)map(pos[8], -1000, 1000, 0, 360));
+        arduino.analogWrite(servoPin9, position8);
+        print(position8 + " ");
+        
+        int position9 = abs((int)map(pos[9], -1000, 1000, 0, 360));
+        arduino.analogWrite(servoPin10, position9);
+        print(position9 + " ");
+       
+        int position10 = abs((int)map(pos[10], -1000, 1000, 0, 360));
+        arduino.analogWrite(servoPin11, position10);
+        print(position10 + " ");
+        
+        int position11 = abs((int)map(pos[11], -1000, 1000, 0, 360));
+        arduino.analogWrite(servoPin12, position11);
+        println(position11 + " ");
+        
+}
